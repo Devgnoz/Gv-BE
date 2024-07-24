@@ -98,8 +98,6 @@ exports.generateMusicInvoice = async (req, res) => {
       let iban = "";
       if (currency === "INR") {
         ifsc = licensor.ifsc_iban;
-      } else if (currency === "INRO") {
-        ifsc = licensor.ifsc_iban;
       } else if (currency === "USD") {
         iban = licensor.ifsc_iban;
       }

@@ -212,4 +212,8 @@ router.post('/mail-invoice',middleware.verifyToken,emailController.processInvoic
 router.post('/download-invoice',emailController.downloadInvoicePDF)
 
 
+//File Log 
+router.get('/file-log',dashboardController.getLastFileLogs)
+
+
 module.exports = router

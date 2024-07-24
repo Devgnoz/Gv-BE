@@ -66,6 +66,7 @@ const path = require('path');
 const fs = require('fs').promises;
 const xlsx = require('xlsx');
 const reportController = require('../controller/reportController');
+const fileLog = require("../database/model/fileLog");
 
 // Multer storage configuration
 const storage = multer.diskStorage({
@@ -108,6 +109,23 @@ async function convertToCSV(req, res, next) {
         
         req.file.filename = 'report1.csv';
         req.file.path = csvFilePath;
+
+        console.log('Music Upload File:', req.file.filename); 
+        
+        // Get current time in IST
+        const now = new Date();
+        const istTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+        const istTimeString = istTime.toLocaleString('en-IN', { hour12: true });
+
+        // Log file details
+        const logEntry = new fileLog({
+            fileName: req.file.originalname,
+            fileType: 'Payment Report',
+            dateTime: istTimeString,
+            status: 'Uploaded successfully'
+        });
+        
+        await logEntry.save();
         
         next();
     } catch (error) {

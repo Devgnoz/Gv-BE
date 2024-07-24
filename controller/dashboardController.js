@@ -2,6 +2,7 @@ const musics = require('../database/model/musics');
 const channels = require("../database/model/channel");
 const licensors = require('../database/model/licensor');
 const dashboard = require('../database/model/dashboard'); 
+const fileLog = require('../database/model/fileLog'); 
 
 
 // Get total count
@@ -371,5 +372,18 @@ exports.getOneMonthDashboard = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+
+// Get the last 6 entries from the fileLog collection
+exports.getLastFileLogs = async (req, res) => {
+    try {
+        const logs = await fileLog.find().sort({ _id: -1 }).limit(6);
+        res.status(200).json(logs);
+    } catch (error) {
+        console.error("Error fetching file logs:", error);
+        res.status(500).json({ message: "Error fetching file logs" });
     }
 };
