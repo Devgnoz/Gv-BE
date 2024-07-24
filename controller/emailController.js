@@ -256,7 +256,7 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
     }
 
             const mailOptions = {
-                from: 'finance@gallery.vision',
+                from: `"Gallery Vision Invoice" <${process.env.GALLERYVISION_EMAIL}>`,
                 to: invoice.licensorEmail,
                 subject: `Gallery Vision Remittance Advice for ${invoice.companyName}`,
                 text: `Dear Partner,\n\nThe Gallery Vision is pleased to inform you that the following distributions have been processed and paid.\n\nStatement Period: ${invoice.date} - ${invoice.date}\nPartner: ${invoice.licensorName}\n${paymentMethodText}\nStatus: Paid\n\nSincerely,\nThe Gallery Vision Accounts Team`,

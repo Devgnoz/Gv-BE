@@ -1,2 +1,5 @@
 File_Sequence_Num,Pymt_Prod_Type_Code,Pymt_Mode,Debit_Acct_no,Beneficiary Name,Beneficiary Account No,Bene_IFSC_Code,Amount,Debit narration,Credit narration,Mobile Number,Email id,Remark,Pymt_Date,Reference_no,Addl_Info1,Addl_Info2,Addl_Info3,Addl_Info4,Addl_Info5,Beneficiary LEI,STATUS,Current Step,File name,Rejected by,Rejection Reason,Acct_Debit_date,Customer Ref No,UTR NO
-38845653,PAB_VENDOR,NEFT,777705031300,Fasna MM,50100402804362,HDFC0000310,9270,Loan Return,,7012402241,fazeel@galleryvision.in,Loan Return,6/26/24,,,,,,,,Success,Sucessfully credit to customer account,NPAB_FMT_24062024161050,,,24-06-2024,1610664510,36723110211DC
+38845653,PAB_VENDOR,NEFT,777705031300,Fasna MM,45345,HDFC0000310,218075.96,Loan Return,,7012402241,fazeel@galleryvision.in,Loan Return,6/26/24,,,,,,,,Success,Sucessfully credit to customer account,NPAB_FMT_24062024161050,,,24-06-2024,1610664510,36723110211DC
+,,,,,45345,,153704.42,,,,,,,,,,,,,,Success,,,,,,,
+,,,,,45345,,110210.13,,,,,,,,,,,,,,Success,,,,,,,
+,,,,,45345,,7961.44,,,,,,,,,,,,,,Success,,,,,,,

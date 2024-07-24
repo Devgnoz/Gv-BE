@@ -3,6 +3,8 @@ const channels = require("../database/model/channel");
 const licensors = require('../database/model/licensor');
 const dashboard = require('../database/model/dashboard'); 
 const fileLog = require('../database/model/fileLog'); 
+const channelInvoice = require('../database/model/channelInvoice');
+const musicInvoice = require("../database/model/musicInvoice");
 
 
 // Get total count
@@ -258,7 +260,7 @@ exports.getSortedMusicsByRevenue = async (req, res) => {
 
 
 
-
+//Dashboard card 1
 exports.getOneMonthDashboard = async (req, res) => {
     try {
         const { currentDate } = req.params;
@@ -281,6 +283,7 @@ exports.getOneMonthDashboard = async (req, res) => {
         }
         const prevMonth = monthNames[prevMonthIndex];
         const prevDate = `${prevMonth} ${prevYearInt}`;
+
         
         // Fetch the dashboard data
         const dashboards = await dashboard.find({}).sort({ date: 1 }).exec();
@@ -387,3 +390,7 @@ exports.getLastFileLogs = async (req, res) => {
         res.status(500).json({ message: "Error fetching file logs" });
     }
 };
+
+
+
+
