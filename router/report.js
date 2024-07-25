@@ -5,6 +5,7 @@
 // const fs = require('fs').promises;
 // const xlsx = require('xlsx');
 // const reportController = require('../controller/reportController');
+// const fileLog = require("../database/model/fileLog");
 
 // // Multer storage configuration
 // const storage = multer.diskStorage({
@@ -16,16 +17,21 @@
 //     }
 // });
 
+// const fileFilter = (req, file, cb) => {
+//     if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || path.extname(file.originalname).toLowerCase() === '.xlsx') {
+//         cb(null, true);
+//     } else {
+//         cb(new Error('Only XLSX files are allowed!'), false);
+//         console.log("Uploaded Report file format is not valid!");
+//     }
+// };
+
 // const upload = multer({ 
 //     storage: storage,
-//     // Overwrite existing file
-//     fileFilter: (req, file, cb) => {
-//         cb(null, true);
-//     }
+//     fileFilter: fileFilter 
 // });
 
-// // Route to import music
-
+// // Function to convert XLSX to CSV
 // async function convertToCSV(req, res, next) {
 //     try {
 //         const xlsxFilePath = path.resolve(__dirname, '..', 'public', 'upload', 'report1.xlsx');
@@ -38,11 +44,27 @@
 //         const csvData = xlsx.utils.sheet_to_csv(sheet);
         
 //         await fs.writeFile(csvFilePath, csvData);
-        
 //         await fs.unlink(xlsxFilePath);
         
 //         req.file.filename = 'report1.csv';
 //         req.file.path = csvFilePath;
+
+//         console.log('Music Upload File:', req.file.filename); 
+        
+//         // Get current time in IST
+//         const now = new Date();
+//         const istTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+//         const istTimeString = istTime.toLocaleString('en-IN', { hour12: true });
+
+//         // Log file details
+//         const logEntry = new fileLog({
+//             fileName: req.file.originalname,
+//             fileType: 'Payment Report',
+//             dateTime: istTimeString,
+//             status: 'Uploaded successfully'
+//         });
+        
+//         await logEntry.save();
         
 //         next();
 //     } catch (error) {
@@ -50,11 +72,20 @@
 //         res.status(500).json({ error: "Error converting XLSX to CSV" });
 //     }
 // }
-// reportRouter.post('/importReport', upload.single('file'), convertToCSV, reportController.importReport);
+
+// // Route to import report
+// reportRouter.post('/importReport', (req, res, next) => {
+//     upload.single('file')(req, res, (err) => {
+//         if (err instanceof multer.MulterError) {
+//             return res.status(500).json({ message: err.message });
+//         } else if (err) {
+//             return res.status(400).json({ message: err.message });
+//         }
+//         next();
+//     });
+// }, convertToCSV, reportController.importReport);
+
 // module.exports = reportRouter;
-
-
-
 
 
 
@@ -78,12 +109,31 @@ const storage = multer.diskStorage({
     }
 });
 
-const fileFilter = (req, file, cb) => {
+const fileFilter = async (req, file, cb) => {
+    const now = new Date();
+    const istTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+    const istTimeString = istTime.toLocaleString('en-IN', { hour12: true });
+
     if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || path.extname(file.originalname).toLowerCase() === '.xlsx') {
         cb(null, true);
     } else {
         cb(new Error('Only XLSX files are allowed!'), false);
         console.log("Uploaded Report file format is not valid!");
+
+        // Log file details as "Uploaded Unsuccessfully"
+        const logEntry = new fileLog({
+            fileName: file.originalname,
+            fileType: 'Payment Report',
+            dateTime: istTimeString, // Local time in IST
+            status: 'Uploaded Unsuccessfully - Invalid file format'
+        });
+
+        try {
+            await logEntry.save();
+            console.log("Logged invalid file format");
+        } catch (logError) {
+            console.error("Error saving invalid file format log:", logError);
+        }
     }
 };
 
@@ -110,7 +160,7 @@ async function convertToCSV(req, res, next) {
         req.file.filename = 'report1.csv';
         req.file.path = csvFilePath;
 
-        console.log('Music Upload File:', req.file.filename); 
+        console.log('Report Upload File:', req.file.filename); 
         
         // Get current time in IST
         const now = new Date();
@@ -130,17 +180,40 @@ async function convertToCSV(req, res, next) {
         next();
     } catch (error) {
         console.error("Error converting XLSX to CSV:", error);
+        
+        // Get current time in IST
+        const now = new Date();
+        const istTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+        const istTimeString = istTime.toLocaleString('en-IN', { hour12: true });
+
+        // Log file details as "Uploaded Unsuccessfully"
+        const logEntry = new fileLog({
+            fileName: req.file.originalname,
+            fileType: 'Payment Report',
+            dateTime: istTimeString,
+            status: 'Uploaded Unsuccessfully - Conversion error'
+        });
+
+        await logEntry.save();
+
         res.status(500).json({ error: "Error converting XLSX to CSV" });
     }
 }
 
 // Route to import report
 reportRouter.post('/importReport', (req, res, next) => {
-    upload.single('file')(req, res, (err) => {
+    upload.single('file')(req, res, async (err) => {
         if (err instanceof multer.MulterError) {
             return res.status(500).json({ message: err.message });
         } else if (err) {
             return res.status(400).json({ message: err.message });
+        }
+
+        if (req.file) {
+            console.log('Uploaded file original name:', req.file.originalname); // Log the original filename
+        } else {
+            console.log('No file uploaded');
+            return res.status(400).json({ message: "No file uploaded" });
         }
         next();
     });

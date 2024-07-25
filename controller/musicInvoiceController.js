@@ -5,6 +5,7 @@ const Currency = require("../database/model/currency");
 const { ObjectId } = require("mongodb");
 const Dashboard = require("../database/model/dashboard")
 const Channel = require("../database/model/channel");
+const Tax = require("../database/model/tax")
 
 
 
@@ -39,6 +40,12 @@ exports.generateMusicInvoice = async (req, res) => {
     const currencyRate = await Currency.findOne({ date });
     if (!currencyRate) {
       return res.status(404).json({ error: "No currency data found for the provided date" });
+    }
+
+    // Fetch US tax % for the given date
+    const usTaxRate = await Tax.findOne({ date });
+    if (!usTaxRate) {
+      return res.status(404).json({ error: "No US Tax % found for the provided date" });
     }
 
     // Fetch the last generated invoice number
