@@ -16,21 +16,14 @@ const middleware = require('../controller/middleware');
 const emailController = require('../controller/emailController'); 
 
 
-// collection to collection
-
-// router.get('/process',channelController.processData)
-
-// collection to collection
-
 
 
 //Register
-router.post('/register',userController.register)
+// router.post('/register',userController.register)
 
 
 
 //login
-// router.post('/login',userController.login)
 
 router.post('/login-test',userController.loginTest)
 
@@ -137,11 +130,11 @@ router.get("/view-channel-Invoice/:id",middleware.verifyToken, channelInvoiceCon
 //TAX
 router.get('/view-tax',middleware.verifyToken,SettingsController.viewTax)
 
-router.get('/view-last-three-tax',SettingsController.getThreeMonthTax)
+router.get('/view-last-three-tax',middleware.verifyToken,SettingsController.getThreeMonthTax)
 
-router.get('/view-all-tax',SettingsController.getAllTax)
+router.get('/view-all-tax',middleware.verifyToken,SettingsController.getAllTax)
 
-router.get('/view-all-currency',SettingsController.getAllCurrency)
+router.get('/view-all-currency',middleware.verifyToken,SettingsController.getAllCurrency)
 
 router.post('/add-tax',middleware.verifyToken,SettingsController.addTax)
 
@@ -158,9 +151,9 @@ router.get('/view-currency',middleware.verifyToken,SettingsController.viewCurren
 
 router.post('/add-currency',middleware.verifyToken,SettingsController.addCurrency)
 
-router.get('/view-last-three-currency',SettingsController.getThreeMonthCurrency)
+router.get('/view-last-three-currency',middleware.verifyToken,SettingsController.getThreeMonthCurrency)
 
-router.get('/view-last-three-data',SettingsController.getThreeMonthsData)
+router.get('/view-last-three-data',middleware.verifyToken,SettingsController.getThreeMonthsData)
 
 //router.delete('/del-currency/:id',SettingsController.delCurrency)
 
@@ -176,17 +169,17 @@ router.put('/change-invoice-status/:id',middleware.verifyToken,PaymentController
 
 //DASHBOARD
 
-router.get('/view-count',dashboardController.getCount)
+router.get('/view-count',middleware.verifyToken,dashboardController.getCount)
 
-router.get('/view-stat',dashboardController.getStat)
+router.get('/view-stat',middleware.verifyToken,dashboardController.getStat)
 
-router.get('/view-channel-stat',dashboardController.getSortedChannelsByRevenue)
+router.get('/view-channel-stat',middleware.verifyToken,dashboardController.getSortedChannelsByRevenue)
 
-router.get('/view-music-stat',dashboardController.getSortedMusicsByRevenue)
+router.get('/view-music-stat',middleware.verifyToken,dashboardController.getSortedMusicsByRevenue)
 
-router.get('/get-dashboard',dashboardController.getDashboard)
+router.get('/get-dashboard',middleware.verifyToken,dashboardController.getDashboard)
 
-router.get('/get-one-dashboard/:currentDate',dashboardController.getOneMonthDashboard)
+router.get('/get-one-dashboard/:currentDate',middleware.verifyToken,dashboardController.getOneMonthDashboard)
 
 
 
@@ -209,11 +202,11 @@ router.get('/get-tax',middleware.verifyToken,SettingsController.getTax)
 // invoice mailing
 router.post('/mail-invoice',middleware.verifyToken,emailController.processInvoicesAndSendEmails)
 
-router.post('/download-invoice',emailController.downloadInvoicePDF)
+router.post('/download-invoice',middleware.verifyToken,emailController.downloadInvoicePDF)
 
 
 //File Log 
-router.get('/file-log',dashboardController.getLastFileLogs)
+router.get('/file-log',middleware.verifyToken,dashboardController.getLastFileLogs)
 
 
 module.exports = router
