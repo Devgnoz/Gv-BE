@@ -28,7 +28,7 @@ server.use('/report',reportRoute)
 
 server.use(router)
 
-const PORT = process.env.PORT || 5000
+const PORT = 5000
 
 server.get('/',(req,res)=>{
     res.status(200).json("Gallery vision server started")
