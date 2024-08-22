@@ -14,8 +14,14 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
  
+# Remove bcrypt if installed
+RUN npm uninstall bcrypt
+ 
 # Install dependencies
 RUN npm install
+ 
+# Reinstall bcrypt specifically for the container architecture
+RUN npm install bcrypt
  
 # Install PM2 globally
 RUN npm install -g pm2
