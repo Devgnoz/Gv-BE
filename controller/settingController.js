@@ -225,7 +225,7 @@ exports.addCurrency = async (req, res) => {
   
 exports.getCurrency = async (req, res) => {
   try {
-      console.log("req",req);
+    //   console.log("req",req);
       const { date } = req.query;
       console.log("Received date:", date);
 
